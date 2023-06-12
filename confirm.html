@@ -1,51 +1,31 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Email Confirmation</title>
-    <style>
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            font-family: Arial, sans-serif;
-        }
-        .message {
-            text-align: center;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Email Confirmation</title>
+  <!-- Import Realm Web SDK -->
+  <script src="https://unpkg.com/realm-web@latest/dist/bundle.iife.js"></script>
 </head>
 <body>
-    <div class="message">Confirming your email...</div>
+  <h1>Email Confirmation Page</h1>
+  <p id="message">Confirming...</p>
 
-    <script>
-        // Function to parse query parameters from the URL
-        function getQueryParams(queryString) {
-            const params = {};
-            const queries = queryString.substring(1).split('&');
+  <script>
+    // Parse the URL query parameters
+    var urlParams = new URLSearchParams(window.location.search);
+    var token = urlParams.get('token');
+    var tokenId = urlParams.get('tokenId');
 
-            queries.forEach(query => {
-                const [key, value] = query.split('=');
-                params[key] = decodeURIComponent(value);
-            });
+    // Initialize the App
+    const app = new Realm.App({ id: "bookkeepwithaigc-hioop" }); // Set your-app-id to your actual app id
 
-            return params;
-        }
-
-        const { token, tokenId } = getQueryParams(window.location.search);
-        fetch(`https://realm.mongodb.com/api/client/v2.0/app/bookkeepwithaigc-hioop/auth/providers/local-userpass/confirm?token=${token}&tokenId=${tokenId}`, {
-            method: 'POST',
-        })
-        .then(response => {
-            if (response.ok) {
-                // The user's email has been confirmed
-                // Redirect them to your app's login page
-                window.location.replace('https://bookkeep.latiaozp.com');
-            } else {
-                // There was an error confirming the user's email
-                document.querySelector('.message').textContent = 'Error confirming email. Please try again.';
-            }
-        });
-    </script>
+    // Confirm the user
+    app.emailPasswordAuth.confirmUser(token, tokenId).then(() => {
+      document.getElementById("message").innerHTML = "Email verified successfully!";
+    }).catch(err => {
+      document.getElementById("message").innerHTML = "Failed to verify email. Error: " + err.message;
+    });
+  </script>
 </body>
 </html>
