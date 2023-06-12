@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Email Confirmation</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+        }
+        .message {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="message">Confirming your email...</div>
+
+    <script>
+        // Function to parse query parameters from the URL
+        function getQueryParams(queryString) {
+            const params = {};
+            const queries = queryString.substring(1).split('&');
+
+            queries.forEach(query => {
+                const [key, value] = query.split('=');
+                params[key] = decodeURIComponent(value);
+            });
+
+            return params;
+        }
+
+        const { token, tokenId } = getQueryParams(window.location.search);
+        fetch(`https://realm.mongodb.com/api/client/v2.0/app/bookkeepwithaigc-hioop/auth/providers/local-userpass/confirm?token=${token}&tokenId=${tokenId}`, {
+            method: 'POST',
+        })
+        .then(response => {
+            if (response.ok) {
+                // The user's email has been confirmed
+                // Redirect them to your app's login page
+                window.location.replace('https://bookkeep.latiaozp.com');
+            } else {
+                // There was an error confirming the user's email
+                document.querySelector('.message').textContent = 'Error confirming email. Please try again.';
+            }
+        });
+    </script>
+</body>
+</html>
