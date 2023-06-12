@@ -24,7 +24,7 @@
     app.emailPasswordAuth.confirmUser(token, tokenId).then(() => {
       document.getElementById("message").innerHTML = "Email verified successfully!";
     }).catch(err => {
-      document.getElementById("message").innerHTML = "Failed to verify email. Error: " + err.message;
+      document.getElementById("message").innerHTML = "Failed to verify email. Error: " + err.message + "token" + token + "tokenId" + tokenId;
     });
   </script>
 </body>
